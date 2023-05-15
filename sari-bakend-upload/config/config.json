@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "sarisanitarycom_saridatabaseuser",
+    "password": "L[Wr{as5SrkQ",
+    "database": "sarisanitarycom_Saridatabase",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "sarisanitarycom_saridatabaseuser",
+    "password": "L[Wr{as5SrkQ",
+    "database": "sarisanitarycom_Saridatabase",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "sarisanitarycom_saridatabaseuser",
+    "password": "L[Wr{as5SrkQ",
+    "database": "sarisanitarycom_Saridatabase",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
