@@ -11,6 +11,13 @@ module.exports =(sequelize, dataTypes)=> {
         type: dataTypes.INTEGER,
     
       },
+      price: {
+        type: dataTypes.INTEGER,
+    
+      },
+      date:{
+        type:dataTypes.STRING,
+      },
       comment: {
         type: dataTypes.STRING(1000),
       },

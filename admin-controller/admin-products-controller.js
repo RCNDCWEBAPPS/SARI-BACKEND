@@ -253,6 +253,7 @@ exports.viewSaleProduct = async (req, res) => {
         order: [["createdAt", "DESC"]],
       })
       .then((products) => {
+        console.log("x",products)
         products = omitNullValues(products);
         console.log(products);
         let quantityTotal = JSON.parse(

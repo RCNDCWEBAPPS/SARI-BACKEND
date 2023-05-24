@@ -4,8 +4,9 @@ const { Op } = require("sequelize");
 let generator = require("generate-password");
 const db = require("../models");
 const { join } = require("path");
-const fs = require("fs");
+
 const uploadImage = require("../router/upload.helper");
+
 const {
   errorHandler,
   notifyUser,
@@ -30,6 +31,8 @@ exports.addProducts = async (req, res) => {
       price,
       quantity,
       modelNo,
+      date,
+      description
     } = req.body;
     // console.log("req.body: ", req.body);
     let imageURI = undefined;
@@ -44,6 +47,8 @@ exports.addProducts = async (req, res) => {
         price,
         quantity,
         modelNo,
+        date,
+        comment: description
       })
       .then(async (result) => {
         if (result) {
@@ -83,6 +88,8 @@ exports.updateProduct = async (req, res) => {
       size,
       price,
       quantity,
+      date,
+      description,
       modelNo,
     } = req.body;
 
@@ -111,6 +118,9 @@ exports.updateProduct = async (req, res) => {
           price: price,
           quantity: quantity,
           modelNo: modelNo,
+          date: date,
+          comment: description,
+
         });
       })
       .then((product) => {
@@ -252,7 +262,11 @@ exports.deleteCategorie = async (req, res) => {
   }
 };
 exports.addSalesProduct = async (req, res) => {
+  console.log("Body", req.body)
+
   let description = req.body.description;
+  let date = req.body.date;
+  let price = req.body.price;
   try {
     let { productId } = req.params;
     let { quantity } = req.params;
@@ -261,6 +275,8 @@ exports.addSalesProduct = async (req, res) => {
         quantity,
         productId: productId,
         comment: description,
+        price:price,
+        date: date
       })
       .then(async (result) => {
         console.log(result);
@@ -272,3 +288,83 @@ exports.addSalesProduct = async (req, res) => {
     errorHandler(err, res);
   }
 };
+
+exports.GeneratorPdf = async (html) => {
+  const browser = await puppeteer.launch();
+
+  // Create a new page.
+  const page = await browser.newPage();
+  await page.setViewport({
+    width: 3508,
+    height: 2480,
+    deviceScaleFactor: 1,
+  });
+  await page.setContent(html);
+
+
+
+  const generatedName = new Date().toLocaleString("en-us", { year: "numeric", month: "long", day: "numeric", second: 'numeric' })
+  const folder_path = `./export/${generatedName}`
+  const fileName = `report.pdf`;
+
+  // check if the folder exist 
+  if (!fs.existsSync(folder_path)) {
+    fs.mkdirSync(folder_path, { recursive: true });
+  }
+
+  // Save the HTML content as a PDF file.
+  await page.pdf({ path: folder_path + "/" + fileName });
+
+  // Close the browser.
+  await browser.close();
+
+  return (folder_path + "/" + fileName)
+}
+
+exports.viewSaleProduct = async (req, res) => {
+  // model: db.ProductImage
+  try {
+    await db.salesproduct
+      .findAll({
+        include: [
+          { model: db.products, include: [{ model: db.ProductImage }] },
+        ],
+        order: [["createdAt", "DESC"]],
+      })
+      .then((products) => {
+        products = omitNullValues(products);
+        console.log(products);
+        let quantityTotal = JSON.parse(
+          _.sumBy(products, (q) => {
+            return q.quantity;
+          })
+        );
+        (output = []), (sNumber = quantityTotal.toString());
+
+        for (var i = 0, len = sNumber.length; i < len; i += 1) {
+          output.push(+sNumber.charAt(i));
+        }
+        for (var i = 0, sum = 0; i < output.length; sum += output[i++]);
+        console.log(sum);
+        console.log("the product sales is ", output);
+        sendData({ product: quantityTotal, products: products }, res);
+      })
+      .catch((err) => {
+        console.log(err);
+        errorHandler(err, res);
+      });
+  } catch (err) {
+    errorHandler(err, res);
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
