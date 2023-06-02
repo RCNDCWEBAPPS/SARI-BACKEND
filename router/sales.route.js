@@ -116,7 +116,7 @@ route.post("/create-pdf", async (req, res,) => {
     <div class="px-4 sm:px-6 lg:px-8">
       <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
-          <h1 class="text-xl font-semibold text-gray-900">Sari weekly sales report From :${new Date(minTime).toLocaleString("en-us", {
+          <h1 class="text-xl font-semibold text-gray-900">SARI SALES REPORT From :${new Date(minTime).toLocaleString("en-us", {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -162,7 +162,7 @@ route.post("/create-pdf", async (req, res,) => {
       day: "numeric",
     })} </td>
     <td class="px-2 py-2 text-xs text-gray-500">${item.product.quantity}</td>
-    <td class="px-2 py-2 text-xs text-gray-500">${item.color} / ${item.product.modelNo}</td>
+    <td class="px-2 py-2 text-xs text-gray-500">${item.product.modelNo}</td>
     <td class="py-2 pl-2 text-xs text-gray-900 ">${item.comment}</td>
     </tr>
     `
